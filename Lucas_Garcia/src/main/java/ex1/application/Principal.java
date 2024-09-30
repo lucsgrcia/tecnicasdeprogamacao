@@ -16,51 +16,83 @@
  */
 
 package ex1.application;
+import ex1.entities.Department;
+import ex1.entities.HourContract;
 import java.util.Scanner;
-import ex1.entities.Peca;
-import ex1.entities.PecaImportada;
+import ex1.entities.Worker;
+import ex1.entities.WorkerLevel;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  *
- * @author Lucas Garcia e Natanel Silva
- * @date23/09/2024
+ * @author Lucas Garcia <lucas.garciadelacerda@gmail.com>
+ * @date 29/09/2024
  * @brief Class Principal
- * 
+ *
  **/
 
 public class Principal {
     public static void main(String[] args) {
         
         Scanner sc = new Scanner(System.in);
-        Peca pc = new Peca();
-        PecaImportada pcimp = new PecaImportada();
+        WorkerLevel level;
+        DateTimeFormatter fmt1 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter fmt2 = DateTimeFormatter.ofPattern("MM/yyyy");
         
-        System.out.println("(1)Peca Nacional\n(2)Peca Importada");
-        int op = sc.nextInt();
+        System.out.print("Enter department's name: ");
+        String departmentName= sc.nextLine();
+        Department department = new Department(departmentName);
+
+        System.out.println("Enter worker data:");
+        System.out.print("Name: ");
+        String name = sc.nextLine();
+        System.out.print("Level: ");
+        String workerlevel = sc.nextLine();
+
+        if(workerlevel == "JUNIOR"){
+            level = WorkerLevel.JUNIOR;
+        }else if(workerlevel == "MID_LEVEL"){
+            level = WorkerLevel.MID_LEVEL;
+        }else{
+            level = WorkerLevel.SENIOR;
+        }
+
+        System.out.print("Base Salary: ");
+        Double baseSalary = sc.nextDouble();
+
+        Worker worker = new Worker(name,level,baseSalary,department);
+        System.out.print("How many contracts to this worker? ");
+        int nContracts = sc.nextInt();
+
+        for (int i = 0; i < nContracts; i++) {
+            System.out.println("Enter contract #"+(i+1)+" data:");
+            sc.nextLine();
+            System.out.print("Date (dd/MM/yyyy): ");
+            String date = sc.nextLine();
+            LocalDate date1 = LocalDate.parse(date, fmt1);
+            Date date2 = Date.from(date1.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            System.out.print("Valuer per hour: ");
+            Double value = sc.nextDouble();
+            System.out.print("Duration (hours): ");
+            int duration = sc.nextInt();
+            HourContract hourContract = new HourContract(date2,value,duration);
+            worker.addContract(hourContract);
+        }
         
         sc.nextLine();
-        System.out.print("Digite o nome da peca: ");
-        String nome = sc.nextLine();
-        System.out.print("Digite o custo da peca: ");
-        float custo = sc.nextFloat();
-        System.out.print("Digite o lucro da peca: ");
-        float lucro = sc.nextFloat();
+        System.out.print("\nEnter month and year to calculate the income (MM/yyyy): ");
+        String date = sc.nextLine();
         
-        if(op==2){
-            System.out.print("Digite a taxa de importacao (%): ");
-            float tximp = sc.nextFloat();
-            System.out.print("Digite o valor do frete: ");
-            float frete = sc.nextFloat();
-            
-            pcimp = new PecaImportada (nome,custo,lucro,tximp,frete);
-            pcimp.exibir();            
-            
-            System.out.println("Custo final: RS "+ pcimp.calcularPreco());
-        }else{
-            
-            pc = new Peca(nome,custo,lucro);
-            pc.exibir();
-            System.out.println("Custo final: RS "+ pc.calcularPreco());
-        }
+        YearMonth yearMonth = YearMonth.parse(date, fmt2);
+        int mes = yearMonth.getMonthValue();
+        int ano = yearMonth.getYear();
+        
+        System.out.println("\n"+worker);
+        System.out.print("Income for "+date);
+        System.out.println(String.format(": %.2f", worker.income(ano, mes)));
     }
 }

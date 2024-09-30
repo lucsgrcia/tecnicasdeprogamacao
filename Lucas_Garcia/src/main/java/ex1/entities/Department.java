@@ -15,24 +15,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ex2.entities;
+package ex1.entities;
 
 /**
  *
- * @author Lucas Garcia e Natanel Silva
- * @date23/09/2024
- * @brief Class ProdutoEstadual
- * 
+ * @author Lucas Garcia <lucas.garciadelacerda@gmail.com>
+ * @date 29/09/2024
+ * @brief Class Department
+ *
  **/
 
-public class ProdutoEstadual extends Produto {
+public class Department {
+
+    private String name;
     
-    public ProdutoEstadual(){
+    public Department(){
         
     }
-    
-    public ProdutoEstadual(String descricao, double valor){
-        
-        super(descricao,valor,10);
+
+    public Department(String name) {
+        this.name = name;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
 }
